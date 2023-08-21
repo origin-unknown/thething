@@ -73,7 +73,7 @@ def login():
             login_user(user)
             # A forwarding takes place.
             return redirect(url_for('index'))
-    return render_template('indextwo.html')
+    return render_template('login.html')
 
 @app.route('/', methods=['GET', 'POST'])
 @login_required
@@ -88,7 +88,7 @@ def index():
                 from_ = app.config['TWILIO_NUMBER'],
                 to = app.config['MY_NUMBER']
             )
-    return render_template('index.html', content=message, name=current_user.username)
+    return render_template('index.html', **locals())
     
 # if __name__ == "__main__":
 #     app.run(debug=True)
