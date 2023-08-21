@@ -81,7 +81,7 @@ def index():
     print(f'{current_user.username} is logged in.')
     message = ()
     if request.method == 'POST':
-        msgval = request.form.get('msg', request.form.get('exa'))
+        msgval = request.form.get('exa', request.form.get('msg'))
         if msgval:
             message = client.messages.create(
                 body = current_user.username + "-" +  msgval,
