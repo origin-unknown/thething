@@ -86,25 +86,16 @@ def login():
 @login_required
 def index():
     print(f'{current_user.username} is logged in.')
+    message = ()
     if request.method == 'POST':
-        message = ()
-        msgval = request.form.get('msg')
-        # if msgval:
-        #     message = client.messages.create(
-        #     body = msgval,
-        #     from_ = twillio_number,
-        #     to = my_number
-        #     )
-        # else:
-        #     msgvall = request.form.get('exa')
-        #     if msgvall:
-        #         message = client.messages.create(
-        #         body = msgvall,
-        #         from_ = twillio_number,
-        #         to = my_number
-        #         )
-
-    return render_template('index.html', content=message)
-
+        msgval = request.form.get('msg', request.form.get('exa'))
+        if msgval:
+            message = client.messages.create(
+                body = current_user.username + "-" +  msgval,
+                from_ = config['TWILIO_NUMBER'],
+                to = config['MY_NUMBER']
+            )
+    return render_template('index.html', content=message, name=current_user.username)
+    
 # if __name__ == "__main__":
 #     app.run(debug=True)
