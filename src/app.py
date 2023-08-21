@@ -16,25 +16,18 @@ from flask_login import (
     login_user,
 )
 from flask_sqlalchemy import SQLAlchemy
-from dotenv import load_dotenv
 import os
 
-load_dotenv()
-
 app = Flask(__name__)
-app.config.from_mapping(
-    SECRET_KEY=os.getenv('SECRET_KEY'),  # 'your secret here', 
-    SQLALCHEMY_DATABASE_URI='sqlite:///users.db'
-)
+app.config.from_object('config.Config')
 app.permanent_session_lifetime = timedelta(minutes=30)
 db = SQLAlchemy(app)
 
-account_sid = os.getenv('ACCOUNT_SID')
-auth_token = os.getenv('AUTH_TOKEN')
-my_number = os.getenv('MY_NUMBER')
-twillio_number = os.getenv('TWILLIO_NUMBER')
-print(account_sid, auth_token)
-# client = Client(account_sid, auth_token)
+print(app.config["ACCOUNT_SID"], app.config["AUTH_TOKEN"])
+# client = Client(
+#     app.config['ACCOUNT_SID'], 
+#     app.config['AUTH_TOKEN']
+# )
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -92,8 +85,8 @@ def index():
         if msgval:
             message = client.messages.create(
                 body = current_user.username + "-" +  msgval,
-                from_ = config['TWILIO_NUMBER'],
-                to = config['MY_NUMBER']
+                from_ = app.config['TWILIO_NUMBER'],
+                to = app.config['MY_NUMBER']
             )
     return render_template('index.html', content=message, name=current_user.username)
     
